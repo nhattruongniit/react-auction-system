@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -8,9 +9,11 @@ import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+
+// configs
+import { PATH_NAME } from '../../config';
 
 const MainStyled = styled('main', {})(
   () => ({
@@ -18,13 +21,37 @@ const MainStyled = styled('main', {})(
   })
 )
 
-const settings = ['Create New Item', 'Deposit', 'Logout'];
+const settings = [
+  {
+    title: 'Create New Item',
+    path: PATH_NAME.CREATE_ITEM
+  },
+  {
+    title: 'Deposit',
+    path: PATH_NAME.DEPOSIT
+  },
+  {
+    title: 'Logout',
+  },
+];
 
 const AdminLayout = ({ children }: React.PropsWithChildren) => {
-  const [isOpenUserMenu, setIsOpenUserMenu] = React.useState(false);
+  // states
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  // hooks
+  const navigate = useNavigate();
 
-  function handleToogleUserMenu() {
-    setIsOpenUserMenu(prevState => !prevState)
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorEl(null);
+  };
+
+  const handleNavigate = (path: string | undefined) => () => {
+    if (!path) return;
+    navigate(path);
   }
 
   return (
@@ -36,8 +63,7 @@ const AdminLayout = ({ children }: React.PropsWithChildren) => {
             <Typography
               variant="h6"
               noWrap
-              component="a"
-              href="/"
+              onClick={handleNavigate(PATH_NAME.ROOT)}
               sx={{
                 mr: 2,
                 display: { xs: 'none', md: 'flex' },
@@ -46,6 +72,7 @@ const AdminLayout = ({ children }: React.PropsWithChildren) => {
                 letterSpacing: '.3rem',
                 color: 'inherit',
                 textDecoration: 'none',
+                cursor: 'pointer',
               }}
             >
               AUCTION
@@ -54,7 +81,7 @@ const AdminLayout = ({ children }: React.PropsWithChildren) => {
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }} />
 
             <Box sx={{ flexGrow: 0 }}>
-              <IconButton sx={{ p: 0 }}  onClick={handleToogleUserMenu}>
+              <IconButton sx={{ p: 0 }} id="menu-appbar" onClick={handleOpenUserMenu}>
                 <Avatar alt="Tony Nguyen" src="/static/images/avatar/2.jpg"  />
               </IconButton>
               <Menu
@@ -64,17 +91,17 @@ const AdminLayout = ({ children }: React.PropsWithChildren) => {
                   vertical: 'top',
                   horizontal: 'right',
                 }}
-                keepMounted
                 transformOrigin={{
                   vertical: 'top',
                   horizontal: 'right',
                 }}
-                open={isOpenUserMenu}
-                onClose={handleToogleUserMenu}
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleCloseUserMenu}
               >
                 {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleToogleUserMenu}>
-                    <Typography textAlign="center">{setting}</Typography>
+                  <MenuItem key={setting.title} onClick={handleNavigate(setting.path)}>
+                    <Typography textAlign="center">{setting.title}</Typography>
                   </MenuItem>
                 ))}
               </Menu>
