@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "name": "auction-system-be",
+  "builds": [{ "src": "index.js", "use": "@vercel/node" }],
+  "routes": [{ "src": "/api/(.*)", "dest": "/index.js" }]
+}
