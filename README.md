@@ -13,11 +13,15 @@
 ## Scripts
 
 ```bash
+
 # run FE
 $ cd auction-system-fe/
 
 # install dependencies
 $ yarn install
+
+# create .env file
+- copy .env.template
 
 # run localhost
 $ yarn dev
