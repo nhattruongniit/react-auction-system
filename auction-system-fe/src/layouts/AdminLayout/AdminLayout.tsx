@@ -82,7 +82,18 @@ const AdminLayout = ({ children }: React.PropsWithChildren) => {
 
             <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }} />
 
-            <Box sx={{ flexGrow: 0 }}>
+            <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center' }}>
+              <Typography
+                sx={{
+                  mr: 2,
+                }}
+              >
+                Balance: {(user.deposit || 0).toLocaleString('en-US', {
+                  style: 'currency',
+                  currency: 'USD',
+                })}
+              </Typography>
+
               <IconButton
                 sx={{ p: 0 }}
                 id="menu-appbar"

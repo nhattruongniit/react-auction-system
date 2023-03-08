@@ -120,10 +120,10 @@ router.get("/:id", auth, async (req, res) => {
 // update user
 router.put("/:id", auth, async (req, res) => {
   const { id } = req.params;
-  const { amount } = req.body;
+  const { deposit } = req.body;
+  const profile  = await User.findById(id);
 
-  const profile = {};
-  if (role) profile.deposit = amount;
+  if (deposit) profile.deposit = profile.deposit + deposit;
 
   try {
     const user = await User.findOneAndUpdate(

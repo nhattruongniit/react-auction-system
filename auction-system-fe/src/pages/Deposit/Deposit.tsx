@@ -1,21 +1,48 @@
 import * as React from "react";
 import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import InputAdornment from '@mui/material/InputAdornment';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import Alert from '@mui/material/Alert';
+
+// services
+import httpRequest from "../../services/httpRequest";
+
+// hooks
+import { useAppContext } from "../../context/AppContext"
 
 export default function Deposit() {
+  // hooks
+  const { user, handleSetUser }  = useAppContext();
+  // states
+  const [alertMessage, setAlertMessage] = React.useState('');
+
   const handleSubmit = (event: {
     preventDefault: () => void;
     currentTarget: HTMLFormElement | undefined;
   }) => {
     event.preventDefault();
+    setAlertMessage('');
+
     const data = new FormData(event.currentTarget);
-    console.log({
-      deposit: data.get("deposit"),
-    });
+    const bodyData = {
+      deposit: Number(data.get("deposit")),
+    }
+
+    httpRequest.put(`/api/user/${user.id}`, bodyData)
+      .then(() => {
+        const profile = {
+          ...user,
+          deposit: user.deposit + bodyData.deposit
+        }
+        handleSetUser(profile)
+        setAlertMessage('Add successfully')
+      })
   };
 
   return (
@@ -36,15 +63,22 @@ export default function Deposit() {
             Deposit
           </Typography>
 
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="deposit"
-            label="Amount"
-            name="deposit"
-            autoFocus
-          />
+          <br />
+
+          {alertMessage && <Alert severity="success">{alertMessage}</Alert>}
+
+          <FormControl fullWidth sx={{ mt: 3 }}>
+            <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
+            <OutlinedInput
+              id="deposit"
+              startAdornment={<InputAdornment position="start">$</InputAdornment>}
+              label="Amount"
+              type="number"
+              name="deposit"
+              autoFocus
+            />
+          </FormControl>
+
           <Grid
             container
             direction="row"

@@ -1,23 +1,44 @@
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import InputAdornment from '@mui/material/InputAdornment';
+import OutlinedInput from '@mui/material/OutlinedInput';
+
+// services
+import httpRequest from "../../services/httpRequest";
+
+// configs
+import { PATH_NAME } from "../../config";
 
 export default function CreateItem() {
+  // hooks
+  const navigate = useNavigate();
+
   const handleSubmit = (event: {
     preventDefault: () => void;
     currentTarget: HTMLFormElement | undefined;
   }) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+    const currentdate = new Date(); 
+    const time = `${currentdate.getHours()}:${currentdate.getMinutes()}:${currentdate.getSeconds()}`
+    const bodyData = {
       name: data.get("name"),
-      price: data.get("price"),
-      time_window: data.get("time_window"),
-    });
+      price: Number(data.get("price")),
+      time_window: `${data.get("time_window")} ${time}`,
+    }
+
+    httpRequest.post('/api/product', bodyData)
+      .then(() => {
+        navigate(PATH_NAME.ROOT)
+      })
   };
 
   return (
@@ -47,23 +68,26 @@ export default function CreateItem() {
             name="name"
             autoFocus
           />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="price"
-            label="Start Price"
-            type="text"
-            id="price"
-          />
+          <FormControl fullWidth sx={{ mt: 3 }}>
+            <InputLabel htmlFor="outlined-adornment-amount">Price</InputLabel>
+            <OutlinedInput
+              id="price"
+              startAdornment={<InputAdornment position="start">$</InputAdornment>}
+              label="Price"
+              type="number"
+              name="price"
+              autoFocus
+            />
+          </FormControl>
           <TextField
             margin="normal"
             required
             fullWidth
             name="time_window"
             label="Time Window"
-            type="text"
+            type="date"
             id="time_window"
+            placeholder=""
           />
           <Grid
             container
