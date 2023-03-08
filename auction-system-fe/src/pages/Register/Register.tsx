@@ -1,4 +1,6 @@
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
+
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -8,18 +10,40 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import Alert from "@mui/material/Alert";
+
+// services
+import httpRequest from "../../services/httpRequest";
+
+// configs
+import { PATH_NAME } from "../../config";
 
 export default function Register() {
+  // states
+  const [errorMessage, setErrorMessage] = React.useState<string>("");
+  // hooks
+  const navigator = useNavigate();
+
   const handleSubmit = (event: {
     preventDefault: () => void;
     currentTarget: HTMLFormElement | undefined;
   }) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+    const bodyData = {
       email: data.get("email"),
       password: data.get("password"),
-    });
+    };
+
+    setErrorMessage("");
+    httpRequest
+      .post("/api/user/register", bodyData)
+      .then(() => {
+        navigator(PATH_NAME.LOGIN);
+      })
+      .catch((err) => {
+        setErrorMessage(err.data.msg);
+      });
   };
 
   return (
@@ -59,6 +83,8 @@ export default function Register() {
             id="password"
             autoComplete="current-password"
           />
+
+          {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
 
           <Button
             type="submit"

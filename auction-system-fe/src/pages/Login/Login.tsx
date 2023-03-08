@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -8,31 +9,44 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import Alert from "@mui/material/Alert";
 
 // services
 import httpRequest from "../../services/httpRequest";
 import authService from "../../services/authServices";
 
+// configs
+import { PATH_NAME } from "../../config";
+
 export default function Login() {
+  // states
+  const [errorMessage, setErrorMessage] = React.useState<string>("");
+  // hooks
+  const navigator = useNavigate();
+
   const handleSubmit = async (event: {
     preventDefault: () => void;
     currentTarget: HTMLFormElement | undefined;
   }) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-
     const bodyData = {
       email: data.get("email"),
       password: data.get("password"),
     };
 
+    setErrorMessage("");
     httpRequest
       .post("/api/user/login", bodyData)
       .then((res) => {
         const { token } = res.data;
         authService.setSession(token);
+
+        navigator(PATH_NAME.ROOT);
       })
-      .catch((err) => console.log("login fail: ", err));
+      .catch((err) => {
+        setErrorMessage(err.data.msg);
+      });
   };
 
   return (
@@ -72,6 +86,8 @@ export default function Login() {
             id="password"
             autoComplete="current-password"
           />
+
+          {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
 
           <Button
             type="submit"

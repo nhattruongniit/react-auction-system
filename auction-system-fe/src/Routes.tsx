@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 
 // layouts
 import AdminLayout from "./layouts/AdminLayout";
+import RootLayout from "./layouts/RootLayout";
 
 // pages
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));

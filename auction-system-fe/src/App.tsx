@@ -1,15 +1,10 @@
-import { useState } from 'react'
+import { useState } from "react";
 
 // pages
-import RoutesMain from './Routes'
+import RoutesMain from "./Routes";
 
 function App() {
-
-  return (
-    <>
-      <RoutesMain />
-    </>
-  )
+  return <RoutesMain />;
 }
 
-export default App
+export default App;

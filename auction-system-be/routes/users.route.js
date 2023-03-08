@@ -11,6 +11,17 @@ const User = require("../models/User");
 router.post("/register", async (req, res) => {
   const { email, password } = req.body;
 
+  // isValid email
+  const isValidEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(
+    email
+  );
+  if (!isValidEmail) {
+    return res.status(400).json({
+      msg: "Email is not valid",
+      isSuccess: false,
+    });
+  }
+
   // check email exist
   const emailExist = await User.findOne({ email });
   if (emailExist) {
@@ -91,7 +102,11 @@ router.get("/:id", auth, async (req, res) => {
   try {
     const user = await User.findById(id);
     res.status(200).json({
-      data: user,
+      data: {
+        id: user._id,
+        email: user.email,
+        deposit: user.deposit || 0,
+      },
       isSuccess: true,
     });
   } catch (err) {
