@@ -12,6 +12,9 @@ import Button from '@mui/material/Button';
 // components
 import FormDialog from './FormDialog';
 
+// types
+import { IProduct } from '../../../types/product';
+
 function createData(
   name: string,
   calories: number,
@@ -34,6 +37,7 @@ interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
   value: number;
+  data: IProduct[]
 }
 
 function TabPanel(props: TabPanelProps) {
