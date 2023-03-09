@@ -12,6 +12,9 @@ const userSchema = new mongoose.Schema({
   deposit: {
     type: Number,
   },
+  bid: {
+    type: Object,
+  },
   date: {
     type: Date,
     default: Date.now,

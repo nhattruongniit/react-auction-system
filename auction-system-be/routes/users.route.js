@@ -106,6 +106,7 @@ router.get("/:id", auth, async (req, res) => {
         id: user._id,
         email: user.email,
         deposit: user.deposit || 0,
+        bid: user.bid || {},
       },
       isSuccess: true,
     });
@@ -120,10 +121,15 @@ router.get("/:id", auth, async (req, res) => {
 // update user
 router.put("/:id", auth, async (req, res) => {
   const { id } = req.params;
-  const { deposit } = req.body;
-  const profile  = await User.findById(id);
+  const { deposit, productId, bid } = req.body;
+  const profile = await User.findById(id);
 
   if (deposit) profile.deposit = profile.deposit + deposit;
+  if (bid) {
+    profile.bid = {
+      [productId]: bid + profile.bid[productId],
+    };
+  }
 
   try {
     const user = await User.findOneAndUpdate(

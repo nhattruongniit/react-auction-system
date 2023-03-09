@@ -24,6 +24,9 @@ import authService from "../../services/authServices";
 // hooks
 import { useAppContext } from "../../context/AppContext";
 
+// helpers
+import { numberToCurrency } from "../../helpers/numberToCurrency";
+
 const MainStyled = styled(
   "main",
   {}
@@ -82,16 +85,13 @@ const AdminLayout = ({ children }: React.PropsWithChildren) => {
 
             <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }} />
 
-            <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center' }}>
+            <Box sx={{ flexGrow: 0, display: "flex", alignItems: "center" }}>
               <Typography
                 sx={{
                   mr: 2,
                 }}
               >
-                Balance: {(user.deposit || 0).toLocaleString('en-US', {
-                  style: 'currency',
-                  currency: 'USD',
-                })}
+                Balance: {numberToCurrency(user.deposit || 0)}
               </Typography>
 
               <IconButton

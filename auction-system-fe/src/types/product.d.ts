@@ -3,4 +3,5 @@ export type IProduct = {
   price: number;
   status: string;
   time_window: string;
-}
+  _id: string;
+};

@@ -6,10 +6,10 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import InputAdornment from '@mui/material/InputAdornment';
-import OutlinedInput from '@mui/material/OutlinedInput';
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import InputAdornment from "@mui/material/InputAdornment";
+import OutlinedInput from "@mui/material/OutlinedInput";
 
 // services
 import httpRequest from "../../services/httpRequest";
@@ -27,18 +27,17 @@ export default function CreateItem() {
   }) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const currentdate = new Date(); 
-    const time = `${currentdate.getHours()}:${currentdate.getMinutes()}:${currentdate.getSeconds()}`
+    const currentDate = new Date();
+    const time = `${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
     const bodyData = {
       name: data.get("name"),
       price: Number(data.get("price")),
       time_window: `${data.get("time_window")} ${time}`,
-    }
+    };
 
-    httpRequest.post('/api/product', bodyData)
-      .then(() => {
-        navigate(PATH_NAME.ROOT)
-      })
+    httpRequest.post("/api/product", bodyData).then(() => {
+      navigate(PATH_NAME.ROOT);
+    });
   };
 
   return (
@@ -72,7 +71,9 @@ export default function CreateItem() {
             <InputLabel htmlFor="outlined-adornment-amount">Price</InputLabel>
             <OutlinedInput
               id="price"
-              startAdornment={<InputAdornment position="start">$</InputAdornment>}
+              startAdornment={
+                <InputAdornment position="start">$</InputAdornment>
+              }
               label="Price"
               type="number"
               name="price"

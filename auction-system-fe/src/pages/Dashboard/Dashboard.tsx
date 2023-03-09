@@ -4,7 +4,7 @@ import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 
 // components
-import TabPanel from "./components/TabPanel";
+import ListTable from "./components/ListTable";
 
 // hooks
 import { useAppContext } from "../../context/AppContext";
@@ -19,6 +19,32 @@ function a11yProps(index: number) {
   };
 }
 
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <>{children}</>
+        </Box>
+      )}
+    </div>
+  );
+}
+
 function Dashboard() {
   const [value, setValue] = React.useState(0);
   const [productCompleted, setProductCompleted] = React.useState([]);
@@ -26,13 +52,14 @@ function Dashboard() {
   const { user } = useAppContext();
 
   React.useEffect(() => {
-    httpRequest.get('/api/product')
-      .then(res => {
-        const { data } = res.data;
-        setProductCompleted(data.filter((item: any) => item.status === 'completed'))
-        setProductOngoing(data.filter((item: any) => item.status === 'new'))
-      })
-  }, [])
+    httpRequest.get("/api/product").then((res) => {
+      const { data } = res.data;
+      setProductCompleted(
+        data.filter((item: any) => item.status === "completed")
+      );
+      setProductOngoing(data.filter((item: any) => item.status === "new"));
+    });
+  }, []);
 
   const handleChange = (_: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -51,14 +78,12 @@ function Dashboard() {
         </Tabs>
       </Box>
 
-      {productOngoing.length > 0 ? (
-        <TabPanel value={value} index={0} data={productOngoing} />
-      ) : <div>No data</div>}
-      
-      {productCompleted.length > 0 ? (
-        <TabPanel value={value} index={1} data={productCompleted} />
-      ) : <div>No data</div>}
-      
+      <TabPanel value={value} index={0}>
+        <ListTable index={0} data={productOngoing} />
+      </TabPanel>
+      <TabPanel value={value} index={1}>
+        <ListTable index={1} data={productCompleted} />
+      </TabPanel>
     </Box>
   );
 }
