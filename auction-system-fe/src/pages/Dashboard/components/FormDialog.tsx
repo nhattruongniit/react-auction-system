@@ -12,35 +12,50 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 
 // hooks
 import { useAppContext } from "../../../context/AppContext";
+
+// services
 import httpRequest from "../../../services/httpRequest";
+
+// types
+import { IProduct } from "../../../types/product";
+import { Alert } from "@mui/material";
 
 type IFormDialogProps = {
   openDialog: boolean;
-  productId: string;
+  product: IProduct;
   handleSetOpenDialog: () => void;
 };
 
 export default function FormDialog({
   openDialog,
-  productId,
+  product,
   handleSetOpenDialog,
 }: IFormDialogProps) {
   // hooks
   const { user } = useAppContext();
+  // states
+  const [errorMessage, setErrorMessage] = React.useState("");
 
   const handleSubmit = async (event: {
     preventDefault: () => void;
     currentTarget: HTMLFormElement | undefined;
   }) => {
     event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const bid = Number(formData.get("bid"));
 
-    const data = new FormData(event.currentTarget);
+    if (bid <= product.price) {
+      setErrorMessage("Bid price must be higher than current price");
+      return;
+    }
+
+    setErrorMessage("");
     const bodyData = {
-      bid: Number(data.get("bid")),
-      productId,
+      bid,
+      productId: product._id,
     };
 
-    httpRequest.put(`/api/user/${user.id}`, bodyData).then((res) => {
+    httpRequest.put(`/api/user/${user.id}`, bodyData).then(() => {
       handleSetOpenDialog();
     });
   };
@@ -51,6 +66,7 @@ export default function FormDialog({
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
           <DialogTitle>Bid Item Name</DialogTitle>
           <DialogContent>
+            {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
             <FormControl fullWidth sx={{ mt: 3 }}>
               <InputLabel htmlFor="outlined-adornment-amount">
                 Amount

@@ -26,14 +26,20 @@ type IListTable = React.PropsWithChildren & {
 function ListTable({ index, data }: IListTable) {
   // states
   const [openDialog, setOpenDialog] = React.useState(false);
-  const [productId, setProductId] = React.useState("");
+  const [product, setProduct] = React.useState<IProduct>({
+    name: "",
+    price: 0,
+    status: "",
+    time_window: "",
+    _id: "",
+  });
 
   const handleSetOpenDialog = () => {
     setOpenDialog((prevState) => !prevState);
   };
 
-  const handleSetProductId = (itemId: string) => {
-    setProductId(itemId);
+  const handleSetProduct = (product: IProduct) => {
+    setProduct(product);
   };
 
   if (data.length === 0) {
@@ -81,7 +87,7 @@ function ListTable({ index, data }: IListTable) {
                           variant="contained"
                           size="small"
                           onClick={() => {
-                            handleSetProductId(row._id);
+                            handleSetProduct(row);
                             handleSetOpenDialog();
                           }}
                         >
@@ -99,7 +105,7 @@ function ListTable({ index, data }: IListTable) {
 
       <FormDialog
         openDialog={openDialog}
-        productId={productId}
+        product={product}
         handleSetOpenDialog={handleSetOpenDialog}
       />
     </>
