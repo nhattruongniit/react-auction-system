@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -55,6 +55,11 @@ export default function Deposit() {
           <Link to="/deposit/todo">Deposit Todo</Link>
         </p>
       </div>
+
+      <br />
+      <Outlet />
+      <br />
+
       <Box
         sx={{
           display: "flex",

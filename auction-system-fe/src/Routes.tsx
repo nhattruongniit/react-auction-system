@@ -3,7 +3,6 @@ import { Routes, Route } from "react-router-dom";
 
 // layouts
 import AdminLayout from "./layouts/AdminLayout";
-import RootLayout from "./layouts/RootLayout";
 
 // pages
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
@@ -23,7 +22,19 @@ import AuthGuard from "./guards/AuthGuard";
 // configs
 import { PATH_NAME } from "./config";
 
-const routesConfig = [
+type ICommon = {
+  path: string;
+  component: React.FC;
+  layout?: React.FC;
+  guard?: React.FC;
+  children?: IRoutes[];
+};
+
+export type IRoutes = ICommon & {
+  routes?: ICommon[];
+};
+
+const routesConfig: IRoutes[] = [
   {
     path: PATH_NAME.ROOT,
     component: Dashboard,
@@ -67,28 +78,36 @@ const routesConfig = [
 function RoutesMain() {
   return (
     <Suspense fallback={<div />}>
-      <Routes>
-        {routesConfig.map((route, routeIndex) => {
-          const Layout = route.layout || React.Fragment;
-          const Component = route.component || React.Fragment;
-          const Guard = route.guard || React.Fragment;
-          return (
-            <Route
-              key={`routes-${routeIndex}`}
-              path={route.path}
-              element={
-                <Guard>
-                  <Layout>
-                    <Component />
-                  </Layout>
-                </Guard>
-              }
-            />
-          );
-        })}
-      </Routes>
+      <Routes>{renderRoutes(routesConfig)}</Routes>
     </Suspense>
   );
 }
+
+const renderRoutes = (routes: IRoutes[]) => {
+  return (
+    <>
+      {routes.map((route, routeIndex) => {
+        const Layout = route.layout || React.Fragment;
+        const Component = route.component || React.Fragment;
+        const Guard = route.guard || React.Fragment;
+        return (
+          <Route
+            key={`routes-${routeIndex}`}
+            path={route.path}
+            element={
+              <Guard>
+                <Layout>
+                  <Component />
+                </Layout>
+              </Guard>
+            }
+          >
+            {route.children && renderRoutes(route.children)}
+          </Route>
+        );
+      })}
+    </>
+  );
+};
 
 export default RoutesMain;
