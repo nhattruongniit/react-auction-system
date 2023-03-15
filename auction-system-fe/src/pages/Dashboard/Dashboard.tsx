@@ -6,9 +6,6 @@ import Box from "@mui/material/Box";
 // components
 import ListTable from "./components/ListTable";
 
-// hooks
-import { useAppContext } from "../../context/AppContext";
-
 // services
 import httpRequest from "../../services/httpRequest";
 
@@ -49,7 +46,6 @@ function Dashboard() {
   const [value, setValue] = React.useState(0);
   const [productCompleted, setProductCompleted] = React.useState([]);
   const [productOngoing, setProductOngoing] = React.useState([]);
-  const { user } = useAppContext();
 
   React.useEffect(() => {
     httpRequest.get("/api/product").then((res) => {

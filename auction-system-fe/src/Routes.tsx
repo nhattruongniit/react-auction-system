@@ -11,6 +11,10 @@ const Login = React.lazy(() => import("./pages/Login"));
 const Register = React.lazy(() => import("./pages/Register"));
 const Deposit = React.lazy(() => import("./pages/Deposit"));
 const CreateItem = React.lazy(() => import("./pages/CreateItem"));
+const DepositProduct = React.lazy(
+  () => import("./pages/Deposit/DepositProduct")
+);
+const DepositTodo = React.lazy(() => import("./pages/Deposit/DepositTodo"));
 
 // guards
 import GuestGuard from "./guards/GuestGuard";
@@ -41,6 +45,16 @@ const routesConfig = [
     component: Deposit,
     layout: AdminLayout,
     guard: AuthGuard,
+    children: [
+      {
+        path: "/deposit/product",
+        component: DepositProduct,
+      },
+      {
+        path: "/deposit/todo",
+        component: DepositTodo,
+      },
+    ],
   },
   {
     path: PATH_NAME.CREATE_ITEM,
